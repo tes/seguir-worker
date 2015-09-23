@@ -1,7 +1,7 @@
 {
   "name": "seguir-worker",
   "version": "1.0.0",
-  "description": "seguir-worker",
+  "description": "Worker agent for Seguir",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
@@ -11,12 +11,21 @@
     "docs": "DATABASE=cassandra mocha -b tests/**.test.js --write-samples && apidoc -i . -e node_modules\\|client -o doc/worker",
     "precommit": "semistandard"
   },
+  "keywords": [
+    "social",
+    "api",
+    "follow",
+    "friend",
+    "like",
+    "post",
+    "cassandra"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/tes/seguir-worker.git"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "clifton.cunningham@gmail.com",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/tes/seguir-worker/issues"
   },
@@ -34,5 +43,11 @@
     "istanbul": "^0.3.20",
     "mocha": "^2.3.3",
     "semistandard": "^7.0.2"
+  },
+  "semistandard": {
+    "ignore": [
+      "doc/**",
+      "coverage/**"
+    ]
   }
 }
