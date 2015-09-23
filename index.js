@@ -10,7 +10,6 @@ var logger = bunyan.createLogger({
 });
 
 function bootstrapWorker (api, config, next) {
-
   var follower = function (cb) {
     api.messaging.listen('seguir-publish-to-followers', function (data, next) {
       logger.debug('Processing publish-to-followers message', data);
@@ -32,7 +31,6 @@ function bootstrapWorker (api, config, next) {
     console.log('Seguir worker ready for work ...');
     return next && next();
   });
-
 }
 
 /* istanbul ignore if */

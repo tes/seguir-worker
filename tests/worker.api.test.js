@@ -2,7 +2,7 @@
  * Acceptance test the Cassandra API directly.
  */
 
-/*eslint-env node, mocha */
+/* eslint-env node, mocha */
 
 var keyspace = 'test_seguir_app_worker';
 var expect = require('expect.js');
@@ -13,8 +13,11 @@ var worker = require('../');
 var async = require('async');
 
 describe('Worker Processing', function () {
-
-  var api, users = [], postId, mentionPostId, followId;
+  var api;
+  var users = [];
+  var postId;
+  var mentionPostId;
+  var followId;
 
   this.timeout(10000);
   this.slow(5000);
@@ -32,25 +35,22 @@ describe('Worker Processing', function () {
   });
 
   describe('users', function () {
-
     it('can create users', function (done) {
       async.map([
-          {username: 'cliftonc', altid: '1'},
-          {username: 'phteven', altid: '2'},
-          {username: 'ted', altid: '3'}
-        ], function (user, cb) {
-          api.user.addUser(keyspace, user.username, user.altid, {userdata: {'age': 15}}, cb);
-        }, function (err, results) {
-          expect(err).to.be(null);
-          users = results;
-          done(err);
-        });
+        {username: 'cliftonc', altid: '1'},
+        {username: 'phteven', altid: '2'},
+        {username: 'ted', altid: '3'}
+      ], function (user, cb) {
+        api.user.addUser(keyspace, user.username, user.altid, {userdata: {'age': 15}}, cb);
+      }, function (err, results) {
+        expect(err).to.be(null);
+        users = results;
+        done(err);
+      });
     });
-
   });
 
   describe('follows', function () {
-
     it('can follow a user who is not a friend', function (done) {
       api.follow.addFollower(keyspace, users[0].user, users[1].user, Date.now(), api.visibility.PUBLIC, function (err, follow) {
         expect(err).to.be(null);
@@ -60,11 +60,9 @@ describe('Worker Processing', function () {
         done();
       });
     });
-
   });
 
   describe('posts', function () {
-
     it('can post a message from a user', function (done) {
       api.post.addPost(keyspace, users[0].user, 'Hello, this is a post', 'text/html', Date.now(), api.visibility.PUBLIC, function (err, post) {
         expect(err).to.be(null);
@@ -96,15 +94,12 @@ describe('Worker Processing', function () {
         }, 1000);
       });
     });
-
   });
 
   describe('feeds', function () {
-
     it('logged in - can get a feed for yourself that is in the correct order', function (done) {
-
       setTimeout(function () {
-        api.feed.getFeed(keyspace, users[0].user, users[0].user, null, 100, function (err, feed) {
+        api.feed.getFeed(keyspace, users[0].user, users[0].user, function (err, feed) {
           expect(err).to.be(null);
           expect(feed[2].follow).to.eql(followId);
           expect(feed[1].post).to.eql(postId);
@@ -113,8 +108,6 @@ describe('Worker Processing', function () {
         });
       }, 500);
     });
-
   });
-
 });
 
