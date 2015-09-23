@@ -1,0 +1,38 @@
+{
+  "name": "seguir-worker",
+  "version": "1.0.0",
+  "description": "seguir-worker",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "seguir": "node ./bin/seguir",
+    "lint": "semistandard",
+    "test": "istanbul cover _mocha -- -b -R spec tests/**.test.js",
+    "docs": "DATABASE=cassandra mocha -b tests/**.test.js --write-samples && apidoc -i . -e node_modules\\|client -o doc/server; apidoc -i client -o doc/client;",
+    "precommit": "semistandard"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tes/seguir-worker.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tes/seguir-worker/issues"
+  },
+  "homepage": "https://github.com/tes/seguir-worker#readme",
+  "dependencies": {
+    "async": "^1.4.2",
+    "bunyan": "^1.5.1",
+    "restify": "^4.0.3",
+    "seguir": "^0.12.1"
+  },
+  "devDependencies": {
+    "apidoc": "^0.13.1",
+    "expect.js": "^0.3.1",
+    "husky": "^0.10.1",
+    "istanbul": "^0.3.20",
+    "mocha": "^2.3.3",
+    "semistandard": "^7.0.2"
+  }
+}
