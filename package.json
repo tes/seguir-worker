@@ -1,6 +1,6 @@
 {
   "name": "seguir-worker",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Worker agent for Seguir",
   "main": "index.js",
   "scripts": {
