@@ -12,15 +12,23 @@ var logger = bunyan.createLogger({
 function bootstrapWorker (api, config, next) {
   var follower = function (cb) {
     api.messaging.listen('seguir-publish-to-followers', function (data, next) {
-      logger.debug('Processing publish-to-followers message', data);
-      api.feed.insertFollowersTimeline(data, next);
+      var dataToLog = {jobUser: data.user, item: data.item, type: data.type};
+      logger.info('Started processing publish-to-followers message', dataToLog);
+      api.feed.insertFollowersTimeline(data, function () {
+        logger.info('Finished publish-to-followers processing', dataToLog);
+      });
+      next();
     }, cb);
   };
 
   var mentions = function (cb) {
     api.messaging.listen('seguir-publish-mentioned', function (data, cb) {
-      logger.debug('Processing publish-mentioned message', data);
-      api.feed.insertMentionedTimeline(data, cb);
+      var dataToLog = {jobUser: data.user, item: data.item, type: data.type};
+      logger.info('Processing publish-mentioned message', dataToLog);
+      api.feed.insertMentionedTimeline(data, function () {
+        logger.info('Finished publish-to-mentioned processing', dataToLog);
+      });
+      next();
     }, cb);
   };
 
