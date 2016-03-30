@@ -1,6 +1,6 @@
 {
   "name": "seguir-worker",
-  "version": "1.0.13",
+  "version": "1.1.0",
   "description": "Worker agent for Seguir",
   "main": "index.js",
   "scripts": {
@@ -34,7 +34,7 @@
     "async": "^1.4.2",
     "bunyan": "^1.5.1",
     "restify": "^4.0.3",
-    "seguir": "^0.12.7"
+    "seguir": "^0.13.1"
   },
   "devDependencies": {
     "apidoc": "^0.13.1",
