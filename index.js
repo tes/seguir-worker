@@ -4,15 +4,16 @@
 var async = require('async');
 var restify = require('restify');
 var bunyan = require('bunyan');
-var logger = bunyan.createLogger({
-  name: 'seguir',
-  serializers: restify.bunyan.serializers
-});
 
 function bootstrapWorker (api, config, next) {
+  var logger = config.logger || bunyan.createLogger({
+    name: 'seguir',
+    serializers: restify.bunyan.serializers
+  });
+
   var follower = function (cb) {
     api.messaging.listen('seguir-publish-to-followers', function (data, listenerCallback) {
-      var dataToLog = {jobUser: data.user, item: data.item, type: data.type};
+      var dataToLog = {jobUser: data.user, type: data.type};
       logger.info('Started processing publish-to-followers message', dataToLog);
       api.feed.insertFollowersTimeline(data, function () {
         logger.info('Finished publish-to-followers processing', dataToLog);
@@ -23,7 +24,7 @@ function bootstrapWorker (api, config, next) {
 
   var mentions = function (cb) {
     api.messaging.listen('seguir-publish-mentioned', function (data, listenerCallback) {
-      var dataToLog = {jobUser: data.user, item: data.item, type: data.type};
+      var dataToLog = {jobUser: data.user, jobType: data.type};
       logger.info('Processing publish-mentioned message', dataToLog);
       api.feed.insertMentionedTimeline(data, function () {
         logger.info('Finished publish-to-mentioned processing', dataToLog);
