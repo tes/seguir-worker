@@ -34,7 +34,7 @@
     "async": "^1.4.2",
     "bunyan": "^1.5.1",
     "restify": "^4.0.3",
-    "seguir": "^0.13.1"
+    "seguir": "^0.13.2"
   },
   "devDependencies": {
     "apidoc": "^0.13.1",
