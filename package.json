@@ -31,10 +31,10 @@
   },
   "homepage": "https://github.com/tes/seguir-worker#readme",
   "dependencies": {
-    "async": "^1.4.2",
+    "async": "^1.5.2",
     "bunyan": "^1.5.1",
     "restify": "^4.0.3",
-    "seguir": "^0.13.2"
+    "seguir": "^0.13.4"
   },
   "devDependencies": {
     "apidoc": "^0.13.1",
