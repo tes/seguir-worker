@@ -3,13 +3,13 @@
  */
 var async = require('async');
 
-function bootstrapWorker (api, logger, next) {
+function bootstrapWorker (api, next) {
   var follower = function (cb) {
     api.messaging.listen('seguir-publish-to-followers', function (data, listenerCallback) {
       var dataToLog = {jobUser: data.user, type: data.type};
-      logger.info('Started processing publish-to-followers message', dataToLog);
+      api.logger.info('Started processing publish-to-followers message', dataToLog);
       api.feed.insertFollowersTimeline(data, function () {
-        logger.info('Finished publish-to-followers processing', dataToLog);
+        api.logger.info('Finished publish-to-followers processing', dataToLog);
       });
       listenerCallback();
     }, cb);
@@ -18,9 +18,9 @@ function bootstrapWorker (api, logger, next) {
   var mentions = function (cb) {
     api.messaging.listen('seguir-publish-mentioned', function (data, listenerCallback) {
       var dataToLog = {jobUser: data.user, jobType: data.type};
-      logger.info('Processing publish-mentioned message', dataToLog);
+      api.logger.info('Processing publish-mentioned message', dataToLog);
       api.feed.insertMentionedTimeline(data, function () {
-        logger.info('Finished publish-to-mentioned processing', dataToLog);
+        api.logger.info('Finished publish-to-mentioned processing', dataToLog);
       });
       listenerCallback();
     }, cb);
@@ -30,7 +30,7 @@ function bootstrapWorker (api, logger, next) {
     follower,
     mentions
   ], function () {
-    logger.info('Seguir worker ready for work ...');
+    api.logger.info('Seguir worker ready for work ...');
     return next && next();
   });
 }
@@ -51,7 +51,7 @@ if (require.main === module) {
       if (err) {
         return next(new Error('Unable to bootstrap API: ' + err.message));
       }
-      return bootstrapWorker(api, logger, next);
+      return bootstrapWorker(api, next);
     });
   };
 }
