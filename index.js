@@ -52,7 +52,7 @@ if (require.main === module) {
 } else {
   // Used for testing
   module.exports = function (config, logger, metrics, next) {
-    require('seguir')(config, logger, metrics, function (err, api) {
+    require('seguir')(config, logger, metrics.statsd, function (err, api) {
       if (err) {
         return next(new Error('Unable to bootstrap API: ' + err.message));
       }
