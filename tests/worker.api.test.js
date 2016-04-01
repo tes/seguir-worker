@@ -19,6 +19,9 @@ describe('Worker Processing', function () {
   var mentionPostId;
   var followId;
 
+  var logger = { info: function () {} };
+  var metrics = { statsd: { increment: function () {} } };
+
   this.timeout(10000);
   this.slow(5000);
 
@@ -27,7 +30,7 @@ describe('Worker Processing', function () {
       expect(err).to.be(null);
       api = seguirApi;
       api.client.setup.setupTenant(api.client, keyspace, function () {
-        worker(config, function () {
+        worker(config, logger, metrics, function () {
           done();
         });
       });

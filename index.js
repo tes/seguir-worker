@@ -2,15 +2,8 @@
  * A worker will listen for jobs on the job queue, and execute them.
  */
 var async = require('async');
-var restify = require('restify');
-var bunyan = require('bunyan');
 
-function bootstrapWorker (api, config, next) {
-  var logger = config.logger || bunyan.createLogger({
-    name: 'seguir',
-    serializers: restify.bunyan.serializers
-  });
-
+function bootstrapWorker (api, logger, next) {
   var follower = function (cb) {
     api.messaging.listen('seguir-publish-to-followers', function (data, listenerCallback) {
       var dataToLog = {jobUser: data.user, type: data.type};
@@ -37,7 +30,7 @@ function bootstrapWorker (api, config, next) {
     follower,
     mentions
   ], function () {
-    console.log('Seguir worker ready for work ...');
+    logger.info('Seguir worker ready for work ...');
     return next && next();
   });
 }
@@ -47,7 +40,7 @@ if (require.main === module) {
   var config = require('./config')();
   require('seguir')(config, function (err, api) {
     if (err) { return process.exit(0); }
-    bootstrapWorker(api, config);
+    bootstrapWorker(api);
   });
 } else {
   // Used for testing
@@ -56,7 +49,7 @@ if (require.main === module) {
       if (err) {
         return next(new Error('Unable to bootstrap API: ' + err.message));
       }
-      return bootstrapWorker(api, config, next);
+      return bootstrapWorker(api, logger, next);
     });
   };
 }
