@@ -15,6 +15,39 @@ function bootstrapWorker (api, next) {
     }, cb);
   };
 
+  var groups = function (cb) {
+    api.messaging.listen('seguir-publish-to-groups', function (data, listenerCallback) {
+      var dataToLog = {jobUser: data.user, type: data.type};
+      api.logger.info('Started processing publish-to-groups message', dataToLog);
+      api.feed.insertGroupsTimeline(data, function () {
+        api.logger.info('Finished publish-to-groups processing', dataToLog);
+      });
+      listenerCallback();
+    }, cb);
+  };
+
+  var members = function (cb) {
+    api.messaging.listen('seguir-publish-to-members', function (data, listenerCallback) {
+      var dataToLog = {jobUser: data.user, type: data.type};
+      api.logger.info('Started processing publish-to-members message', dataToLog);
+      api.feed.insertMembersTimeline(data, function () {
+        api.logger.info('Finished publish-to-members processing', dataToLog);
+      });
+      listenerCallback();
+    }, cb);
+  };
+
+  var removeMembers = function (cb) {
+    api.messaging.listen('seguir-remove-members', function (data, listenerCallback) {
+      var dataToLog = {jobUser: data.user, jobGroup: data.group, type: data.type};
+      api.logger.info('Started processing seguir-remove-members message', dataToLog);
+      api.group.removeMembers(data, function () {
+        api.logger.info('Finished seguir-remove-members processing', dataToLog);
+      });
+      listenerCallback();
+    }, cb);
+  };
+
   var mentions = function (cb) {
     api.messaging.listen('seguir-publish-mentioned', function (data, listenerCallback) {
       var dataToLog = {jobUser: data.user, jobType: data.type};
@@ -28,6 +61,9 @@ function bootstrapWorker (api, next) {
 
   async.series([
     follower,
+    groups,
+    members,
+    removeMembers,
     mentions
   ], function () {
     api.logger.info('Seguir worker ready for work ...');
