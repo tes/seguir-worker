@@ -19,3 +19,10 @@ notifications:
   hipchat:
     rooms:
       secure: cwunRMkBq13vx1AOgbyqVzgRyWoFIGcH4+kKcEtWL754EZd3T/qC4bpa7V2BGibD/YhY0d4+mB9kbMm9SQoJX7E5BGGRsEhw1OcBdCkHiInbdES5CCt4N2QCQFOmdd2Vt/NlSLXmYNXIJa55STOJ+OZzibCgApRfjGrlxISOZ1Q=
+deploy:
+  provider: npm
+  email: clifton.cunningham@tes.co.uk
+  api_key:
+    secure: UbkeChF4rrx+OvLFkgckIn1j5RNcNAP04TEb0ryQ3CissQ5UaKjthkfZ/UR6HiAINgoyBJgWvRJLtLvp3jgD76wyA7gu176Nqg2EeWgXcdeRx3/2m4IAZRGLHKWmdz3kEKGr+D9yjrqy2ClsurynMF0VQ2vdE6jqumHEpo+zcpk=
+  on:
+    tags: true  
