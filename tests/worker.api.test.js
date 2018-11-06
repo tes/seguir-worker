@@ -25,10 +25,13 @@ describe('Worker Processing', function () {
   this.timeout(20000);
   this.slow(5000);
 
+  let cleaned = false;
+
   before(function (done) {
     Api(config, function (err, seguirApi) {
       expect(err).to.be(null);
       api = seguirApi;
+      api.client.truncate = !process.env.CLEAN && !(process.env.CLEAN_ONCE && !cleaned);
       api.client.setup.setupTenant(api.client, keyspace, function () {
         api.migrations.getMigrationsToApplyToKeyspace(keyspace, 'tenant', (err, migrations) => {
           if (err) { return done(err); }
