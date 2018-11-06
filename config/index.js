@@ -10,10 +10,10 @@ module.exports = function () {
       config = require(configPath);
     } else {
       console.log('You have specified a config file that doesnt exist! Using default cassandra configuration.');
-      config = require(__dirname + '/cassandra.json');
+      config = require(path.join(__dirname, '/cassandra.json'));
     }
   } else {
-    config = require(__dirname + '/cassandra.json');
+    config = require(path.join(__dirname, '/cassandra.json'));
   }
   return config;
 };

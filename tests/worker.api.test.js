@@ -46,11 +46,11 @@ describe('Worker Processing', function () {
   describe('users', function () {
     it('can create users', function (done) {
       async.map([
-        {username: 'cliftonc', altid: '1'},
-        {username: 'phteven', altid: '2'},
-        {username: 'ted', altid: '3'}
+        { username: 'cliftonc', altid: '1' },
+        { username: 'phteven', altid: '2' },
+        { username: 'ted', altid: '3' }
       ], function (user, cb) {
-        api.user.addUser(keyspace, user.username, user.altid, {userdata: {'age': 15}}, cb);
+        api.user.addUser(keyspace, user.username, user.altid, { userdata: { 'age': 15 } }, cb);
       }, function (err, results) {
         expect(err).to.be(null);
         users = results;
@@ -119,4 +119,3 @@ describe('Worker Processing', function () {
     });
   });
 });
-
