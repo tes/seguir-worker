@@ -1,5 +1,5 @@
 language: node_js
-sudo: false
+sudo: 'required'
 node_js:
   - '6'
   - '8'
@@ -25,4 +25,4 @@ deploy:
   api_key:
     secure: UbkeChF4rrx+OvLFkgckIn1j5RNcNAP04TEb0ryQ3CissQ5UaKjthkfZ/UR6HiAINgoyBJgWvRJLtLvp3jgD76wyA7gu176Nqg2EeWgXcdeRx3/2m4IAZRGLHKWmdz3kEKGr+D9yjrqy2ClsurynMF0VQ2vdE6jqumHEpo+zcpk=
   on:
-    tags: true  
+    tags: true
