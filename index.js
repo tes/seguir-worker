@@ -15,17 +15,6 @@ function bootstrapWorker (api, next) {
     }, cb);
   };
 
-  var groups = function (cb) {
-    api.messaging.listen('seguir-publish-to-groups', function (data, listenerCallback) {
-      var dataToLog = { jobUser: data.user, type: data.type };
-      api.logger.info('Started processing publish-to-groups message', dataToLog);
-      api.feed.insertGroupsTimeline(data, function () {
-        api.logger.info('Finished publish-to-groups processing', dataToLog);
-      });
-      listenerCallback();
-    }, cb);
-  };
-
   var members = function (cb) {
     api.messaging.listen('seguir-publish-to-members', function (data, listenerCallback) {
       var dataToLog = { jobUser: data.user, type: data.type };
@@ -61,7 +50,6 @@ function bootstrapWorker (api, next) {
 
   async.series([
     follower,
-    groups,
     members,
     removeMembers,
     mentions

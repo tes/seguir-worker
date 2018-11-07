@@ -3,14 +3,11 @@
  */
 
 /* eslint-env node, mocha */
-
-var keyspace = 'test_seguir_app_worker';
 var expect = require('expect.js');
-var Api = require('seguir');
-var config = require('../config')();
-config.keyspace = keyspace;
-var worker = require('../');
 var async = require('async');
+var seguir = require('seguir');
+var config = require('../config')();
+var worker = require('../');
 
 describe('Worker Processing', function () {
   var api;
@@ -26,20 +23,27 @@ describe('Worker Processing', function () {
   this.slow(5000);
 
   before(function (done) {
-    Api(config, function (err, seguirApi) {
+    config.keyspace = 'test_seguir_app_worker';
+    seguir(config, function (err, seguirApi) {
       expect(err).to.be(null);
       api = seguirApi;
-      api.client.setup.setupTenant(api.client, keyspace, function () {
-        api.migrations.getMigrationsToApplyToKeyspace(keyspace, 'tenant', (err, migrations) => {
+      api.client.setup.setupTenant(api.client, config.keyspace, function (err) {
+        expect(err).to.be(undefined);
+        api.migrations.getMigrationsToApplyToKeyspace(config.keyspace, 'tenant', (err, migrations) => {
           if (err) { return done(err); }
           api.migrations.applyMigrations(migrations, (err) => {
             if (err) { return done(err); }
-            worker(config, logger, statsd, function () {
-              done(null, api);
-            });
+            worker(config, logger, statsd, done);
           });
         });
       });
+    });
+  });
+
+  after(function (done) {
+    api.client._client.shutdown(function () {
+      done();
+      process.exit();
     });
   });
 
@@ -50,7 +54,7 @@ describe('Worker Processing', function () {
         { username: 'phteven', altid: '2' },
         { username: 'ted', altid: '3' }
       ], function (user, cb) {
-        api.user.addUser(keyspace, user.username, user.altid, { userdata: { 'age': 15 } }, cb);
+        api.user.addUser(config.keyspace, user.username, user.altid, { userdata: { 'age': 15 } }, cb);
       }, function (err, results) {
         expect(err).to.be(null);
         users = results;
@@ -61,7 +65,7 @@ describe('Worker Processing', function () {
 
   describe('follows', function () {
     it('can follow a user who is not a friend', function (done) {
-      api.follow.addFollower(keyspace, users[0].user, users[1].user, Date.now(), api.visibility.PUBLIC, function (err, follow) {
+      api.follow.addFollower(config.keyspace, users[0].user, users[1].user, Date.now(), api.visibility.PUBLIC, function (err, follow) {
         expect(err).to.be(null);
         expect(follow.user).to.eql(users[0]);
         expect(follow.user_follower).to.eql(users[1]);
@@ -73,7 +77,7 @@ describe('Worker Processing', function () {
 
   describe('posts', function () {
     it('can post a message from a user', function (done) {
-      api.post.addPost(keyspace, users[0].user, 'Hello, this is a post', 'text/html', Date.now(), api.visibility.PUBLIC, function (err, post) {
+      api.post.addPost(config.keyspace, users[0].user, 'Hello, this is a post', 'text/html', Date.now(), api.visibility.PUBLIC, function (err, post) {
         expect(err).to.be(null);
         expect(post.content).to.be('Hello, this is a post');
         expect(post.user).to.eql(users[0]);
@@ -83,7 +87,7 @@ describe('Worker Processing', function () {
     });
 
     it('you can mention someone in a post', function (done) {
-      api.post.addPost(keyspace, users[2].user, 'Hello, this is a post mentioning @cliftonc, not from a follower', 'text/html', Date.now(), api.visibility.PUBLIC, function (err, post) {
+      api.post.addPost(config.keyspace, users[2].user, 'Hello, this is a post mentioning @cliftonc, not from a follower', 'text/html', Date.now(), api.visibility.PUBLIC, function (err, post) {
         expect(err).to.be(null);
         expect(post.content).to.be('Hello, this is a post mentioning @cliftonc, not from a follower');
         mentionPostId = post.post;
@@ -92,10 +96,10 @@ describe('Worker Processing', function () {
     });
 
     it('you can create and delete a post', function (done) {
-      api.post.addPost(keyspace, users[0].user, 'This is a short lived post', 'text/html', Date.now(), api.visibility.PUBLIC, function (err, post) {
+      api.post.addPost(config.keyspace, users[0].user, 'This is a short lived post', 'text/html', Date.now(), api.visibility.PUBLIC, function (err, post) {
         expect(err).to.be(null);
         setTimeout(function () {
-          api.post.removePost(keyspace, users[0].user, post.post, function (err, result) {
+          api.post.removePost(config.keyspace, users[0].user, post.post, function (err, result) {
             expect(err).to.be(null);
             expect(result.status).to.be('removed');
             done();
@@ -108,7 +112,7 @@ describe('Worker Processing', function () {
   describe('feeds', function () {
     it('logged in - can get a feed for yourself that is in the correct order', function (done) {
       setTimeout(function () {
-        api.feed.getFeed(keyspace, users[0].user, users[0].user, function (err, feed) {
+        api.feed.getFeed(config.keyspace, users[0].user, users[0].user, function (err, feed) {
           expect(err).to.be(null);
           expect(feed[2].follow).to.eql(followId);
           expect(feed[1].post).to.eql(postId);
