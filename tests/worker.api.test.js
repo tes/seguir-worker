@@ -27,7 +27,8 @@ describe('Worker Processing', function () {
     seguir(config, function (err, seguirApi) {
       expect(err).to.be(null);
       api = seguirApi;
-      api.client.setup.setupTenant(api.client, config.keyspace, function () {
+      api.client.setup.setupTenant(api.client, config.keyspace, function (err) {
+        expect(err).to.be(undefined);
         api.migrations.getMigrationsToApplyToKeyspace(config.keyspace, 'tenant', (err, migrations) => {
           if (err) { return done(err); }
           api.migrations.applyMigrations(migrations, (err) => {
