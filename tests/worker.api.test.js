@@ -9,7 +9,6 @@ var seguir = require('seguir');
 var config = require('../config')();
 var worker = require('../');
 
-config.keyspace = 'test_seguir_app_worker';
 describe('Worker Processing', function () {
   var api;
   var users = [];
@@ -24,6 +23,7 @@ describe('Worker Processing', function () {
   this.slow(5000);
 
   before(function (done) {
+    config.keyspace = 'test_seguir_app_worker';
     seguir(config, function (err, seguirApi) {
       expect(err).to.be(null);
       api = seguirApi;
