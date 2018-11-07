@@ -18,7 +18,7 @@ notifications:
   hipchat:
     rooms:
       secure: cwunRMkBq13vx1AOgbyqVzgRyWoFIGcH4+kKcEtWL754EZd3T/qC4bpa7V2BGibD/YhY0d4+mB9kbMm9SQoJX7E5BGGRsEhw1OcBdCkHiInbdES5CCt4N2QCQFOmdd2Vt/NlSLXmYNXIJa55STOJ+OZzibCgApRfjGrlxISOZ1Q=
-script: CLEAN_ONCE=true npm test
+script: npm run test
 deploy:
   provider: npm
   email: clifton.cunningham@tes.co.uk
