@@ -24,7 +24,6 @@ script: SEGUIR_DEBUG=true npm run test
 deploy:
   provider: npm
   email: clifton.cunningham@tes.co.uk
-  api_key:
-    secure: UbkeChF4rrx+OvLFkgckIn1j5RNcNAP04TEb0ryQ3CissQ5UaKjthkfZ/UR6HiAINgoyBJgWvRJLtLvp3jgD76wyA7gu176Nqg2EeWgXcdeRx3/2m4IAZRGLHKWmdz3kEKGr+D9yjrqy2ClsurynMF0VQ2vdE6jqumHEpo+zcpk=
+  api_key: $NPM_TOKEN
   on:
     tags: true
