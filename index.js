@@ -39,7 +39,7 @@ function bootstrapWorker (api, next) {
 
   var interestedUsers = function (cb) {
     api.messaging.listen('seguir-publish-to-interested-users', function (data, listenerCallback) {
-      var dataToLog = { jobUser: data.user, jobInterest: data.interest, type: data.type };
+      var dataToLog = { jobUser: data.user, jobInterests: data.interests, type: data.type };
       api.logger.info('Started processing seguir-publish-to-interested-users message', dataToLog);
       api.feed.insertInterestedUsersTimelines(data, function () {
         api.logger.info('Finished publish-to-interested-users processing', dataToLog);
