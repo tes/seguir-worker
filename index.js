@@ -38,11 +38,15 @@ function bootstrapWorker (api, next) {
   };
 
   var interestedUsers = function (cb) {
-    api.messaging.listen('seguir-publish-to-interested-users', function (data, listenerCallback) {
-      var dataToLog = { jobUser: data.user, jobInterests: data.interests, type: data.type };
-      api.logger.info('Started processing seguir-publish-to-interested-users message', dataToLog);
-      api.feed.insertInterestedUsersTimelines(data, function () {
-        api.logger.info('Finished publish-to-interested-users processing', dataToLog);
+    api.messaging.listen('seguir-publish-to-interested-users', function (jobData, listenerCallback) {
+      var context = { jobData };
+      api.logger.info('Started processing seguir-publish-to-interested-users message', context);
+      api.feed.insertInterestedUsersTimelines(jobData, function (error) {
+        if (error) {
+          api.logger.error('Failed to process seguir-publish-to-interested-users message', context);
+        } else {
+          api.logger.info('Finished processing seguir-publish-to-interested-users message', context);
+        }
       });
       listenerCallback();
     }, cb);
