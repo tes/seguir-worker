@@ -37,6 +37,21 @@ function bootstrapWorker (api, next) {
     }, cb);
   };
 
+  var interestedUsers = function (cb) {
+    api.messaging.listen('seguir-publish-to-interested-users', function (jobData, listenerCallback) {
+      var context = { jobData };
+      api.logger.info('Started processing seguir-publish-to-interested-users message', context);
+      api.feed.insertInterestedUsersTimelines(jobData, function (error) {
+        if (error) {
+          api.logger.error('Failed to process seguir-publish-to-interested-users message', context);
+        } else {
+          api.logger.info('Finished processing seguir-publish-to-interested-users message', context);
+        }
+      });
+      listenerCallback();
+    }, cb);
+  };
+
   var mentions = function (cb) {
     api.messaging.listen('seguir-publish-mentioned', function (data, listenerCallback) {
       var dataToLog = { jobUser: data.user, jobType: data.type };
@@ -52,6 +67,7 @@ function bootstrapWorker (api, next) {
     follower,
     members,
     removeMembers,
+    interestedUsers,
     mentions
   ], function () {
     api.logger.info('Seguir worker ready for work ...');
