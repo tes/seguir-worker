@@ -38,17 +38,18 @@ function bootstrapWorker (api, next) {
   };
 
   var interestedUsers = function (cb) {
-    api.messaging.listen('seguir-publish-to-interested-users', function (jobData, listenerCallback) {
+    api.messaging.listen('seguir-publish-to-interested-users', { maxReceiveCount: 1, invisibletime: 86400, timeout: 0 }, function (jobData, listenerCallback) {
       var context = { jobData };
       api.logger.info('Started processing seguir-publish-to-interested-users message', context);
       api.feed.insertInterestedUsersTimelines(jobData, function (error) {
         if (error) {
           api.logger.error('Failed to process seguir-publish-to-interested-users message', context);
+          listenerCallback(error);
         } else {
           api.logger.info('Finished processing seguir-publish-to-interested-users message', context);
+          listenerCallback();
         }
       });
-      listenerCallback();
     }, cb);
   };
 
