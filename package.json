@@ -38,7 +38,7 @@
     "bunyan": "^1.5.1",
     "cassandra-driver": "^3.0.0",
     "restify": "^4.0.3",
-    "seguir": "1.0.26"
+    "seguir": "1.0.27"
   },
   "devDependencies": {
     "apidoc": "^0.17.6",
