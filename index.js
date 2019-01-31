@@ -8,8 +8,12 @@ function bootstrapWorker (api, next) {
     api.messaging.listen('seguir-publish-to-followers', function (data, listenerCallback) {
       var dataToLog = { jobUser: data.user, type: data.type };
       api.logger.info('Started processing publish-to-followers message', dataToLog);
-      api.feed.insertFollowersTimeline(data, function () {
-        api.logger.info('Finished publish-to-followers processing', dataToLog);
+      api.feed.insertFollowersTimeline(data, function (error) {
+        if (error) {
+          api.logger.error('Failed to process publish-to-followers', dataToLog);
+        } else {
+          api.logger.info('Finished publish-to-followers processing', dataToLog);
+        }
       });
       listenerCallback();
     }, cb);
@@ -19,8 +23,12 @@ function bootstrapWorker (api, next) {
     api.messaging.listen('seguir-publish-to-members', function (data, listenerCallback) {
       var dataToLog = { jobUser: data.user, type: data.type };
       api.logger.info('Started processing publish-to-members message', dataToLog);
-      api.feed.insertMembersTimeline(data, function () {
-        api.logger.info('Finished publish-to-members processing', dataToLog);
+      api.feed.insertMembersTimeline(data, function (error) {
+        if (error) {
+          api.logger.error('Failed to process publish-to-members', dataToLog);
+        } else {
+          api.logger.info('Finished publish-to-members processing', dataToLog);
+        }
       });
       listenerCallback();
     }, cb);
@@ -29,9 +37,13 @@ function bootstrapWorker (api, next) {
   var removeMembers = function (cb) {
     api.messaging.listen('seguir-remove-members', function (data, listenerCallback) {
       var dataToLog = { jobUser: data.user, jobGroup: data.group, type: data.type };
-      api.logger.info('Started processing seguir-remove-members message', dataToLog);
-      api.group.removeMembers(data, function () {
-        api.logger.info('Finished seguir-remove-members processing', dataToLog);
+      api.logger.info('Started processing remove-members message', dataToLog);
+      api.group.removeMembers(data, function (error) {
+        if (error) {
+          api.logger.error('Failed to process remove-members', dataToLog);
+        } else {
+          api.logger.info('Finished remove-members processing', dataToLog);
+        }
       });
       listenerCallback();
     }, cb);
@@ -53,8 +65,12 @@ function bootstrapWorker (api, next) {
     api.messaging.listen('seguir-publish-mentioned', function (data, listenerCallback) {
       var dataToLog = { jobUser: data.user, jobType: data.type };
       api.logger.info('Processing publish-mentioned message', dataToLog);
-      api.feed.insertMentionedTimeline(data, function () {
-        api.logger.info('Finished publish-to-mentioned processing', dataToLog);
+      api.feed.insertMentionedTimeline(data, function (error) {
+        if (error) {
+          api.logger.error('Failed to process publish-mentioned', dataToLog);
+        } else {
+          api.logger.info('Finished publish-mentioned processing', dataToLog);
+        }
       });
       listenerCallback();
     }, cb);
