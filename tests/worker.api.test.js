@@ -112,7 +112,7 @@ describe('Worker Processing', function () {
   describe('feeds', function () {
     it('logged in-can get a feed for yourself that is in the correct order', function (done) {
       setTimeout(function () {
-        api.feed.getFeed(config.keyspace, users[0].user, users[0].user, function (err, feed) {
+        api.feed.getFeed(config.keyspace, users[0].user, users[0].user, function (err, { feed }) {
           expect(err).to.be(null);
           expect(feed[2].follow).to.eql(followId);
           expect(feed[1].post).to.eql(postId);
